@@ -22,10 +22,7 @@ class LintVisionRenderer(val entry: LineEntry) : EditorCustomElementRenderer {
 
     private val state = LintVisionSettings.getInstance().state
     private val text = LintVisionFormatter.inline(entry)
-    private val foreground = JBColor(
-        LintVisionSettings.getInstance().colorOf(entry.primary.level),
-        LintVisionSettings.getInstance().colorOf(entry.primary.level)
-    )
+    private val foreground = LintVisionSettings.getInstance().jbColorOf(entry.primary.level)
     private val showBackground = state.showBackground && state.backgroundAlpha > 0
     private val alpha = state.backgroundAlpha.coerceIn(0, 100) / 100.0
     private val radius = state.borderRadius.coerceAtLeast(0)

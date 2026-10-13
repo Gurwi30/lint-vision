@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
+import com.intellij.ui.JBColor
 import com.intellij.util.xmlb.XmlSerializerUtil
 import dev.gurwi.lintvision.model.Level
 
@@ -80,6 +81,11 @@ class LintVisionSettings : PersistentStateComponent<LintVisionSettings.State> {
 
         fun getInstance(): LintVisionSettings = service()
 
+    }
+
+    fun jbColorOf(level: Level): JBColor {
+        val rgb = colorOf(level)
+        return JBColor(rgb, rgb)
     }
 
 }
