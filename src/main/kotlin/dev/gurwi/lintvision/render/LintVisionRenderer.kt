@@ -7,10 +7,10 @@ import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.ColorUtil
+import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import dev.gurwi.lintvision.model.LineEntry
 import dev.gurwi.lintvision.settings.LintVisionSettings
-import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Rectangle
@@ -22,7 +22,10 @@ class LintVisionRenderer(val entry: LineEntry) : EditorCustomElementRenderer {
 
     private val state = LintVisionSettings.getInstance().state
     private val text = LintVisionFormatter.inline(entry)
-    private val foreground = Color(LintVisionSettings.getInstance().colorOf(entry.primary.level))
+    private val foreground = JBColor(
+        LintVisionSettings.getInstance().colorOf(entry.primary.level),
+        LintVisionSettings.getInstance().colorOf(entry.primary.level)
+    )
     private val showBackground = state.showBackground && state.backgroundAlpha > 0
     private val alpha = state.backgroundAlpha.coerceIn(0, 100) / 100.0
     private val radius = state.borderRadius.coerceAtLeast(0)
@@ -37,6 +40,7 @@ class LintVisionRenderer(val entry: LineEntry) : EditorCustomElementRenderer {
     override fun calcWidthInPixels(inlay: Inlay<*>): Int {
         val editor = inlay.editor
         val metrics = editor.contentComponent.getFontMetrics(font(editor))
+
         return gapWidth(editor) + metrics.stringWidth(text) + 2 * horizontalPadding()
     }
 
@@ -69,6 +73,7 @@ class LintVisionRenderer(val entry: LineEntry) : EditorCustomElementRenderer {
     fun pillBounds(inlay: Inlay<*>): Rectangle? {
         val bounds = inlay.bounds ?: return null
         val offset = gapWidth(inlay.editor)
+
         return Rectangle(bounds.x + offset, bounds.y, bounds.width - offset, bounds.height)
     }
 

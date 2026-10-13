@@ -1,29 +1,37 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <resource-bundle>messages.LintVisionBundle</resource-bundle>
     <id>dev.gurwi.LintVision</id>
-
-    <!-- Public plugin name should be written in Title Case.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
     <name>LintVision</name>
-
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://www.yourcompany.com">YourCompany</vendor>
-
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
-    <description><![CDATA[
-        Enter short description for your plugin here.<br>
-        <em>most HTML tags may be used</em>
-    ]]></description>
-
-    <!-- Product and plugin compatibility requirements.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <vendor url="https://www.gurwi.dev">Gurwi</vendor>
+    <description>
+        <![CDATA[
+        <html>
+            <body>
+                <p>Shows errors, warnings and other inspection messages inline at the end of the line, like the VS Code Error Lens extension.</p>
+                <p>Fully customizable under <em>Settings | Tools | LintVision</em>.</p>
+            </body>
+        </html>
+        ]]>
+    </description>
     <depends>com.intellij.modules.platform</depends>
-
-    <!-- Extension points defined by the plugin.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <depends>com.intellij.modules.lang</depends>
     <extensions defaultExtensionNs="com.intellij">
-
+        <postStartupActivity implementation="dev.gurwi.lintvision.LintVision"/>
+        <applicationService serviceImplementation="dev.gurwi.lintvision.settings.LintVisionSettings"/>
+        <applicationConfigurable
+                parentId="tools"
+                instance="dev.gurwi.lintvision.settings.LintVisionConfigurable"
+                id="dev.gurwi.lintvision.settings"
+                key="settings.displayName"/>
     </extensions>
+    <actions>
+        <action
+                id="LintVision.Toggle"
+                class="dev.gurwi.lintvision.action.ToggleLintVisionAction"
+                text="Action.Toggle.Text"
+                description="Action.toggle.description">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>

@@ -23,11 +23,16 @@ class DiagnosticCollector(private val project: Project) {
         val byLine = HashMap<Int, MutableList<LintDiagnostic>>()
         for (highlighter in markup.allHighlighters) {
             if (!highlighter.isValid) continue
+
             val info = HighlightInfo.fromRangeHighlighter(highlighter) ?: continue
             val level = levelOf(info.severity) ?: continue
+
             if (!settings.isShown(level)) continue
+
             val message = info.description?.trim().orEmpty()
+
             if (message.isEmpty()) continue
+
             if (exclude != null && exclude.containsMatchIn(message)) continue
             if (highlighter.startOffset > document.textLength) continue
 
@@ -47,6 +52,7 @@ class DiagnosticCollector(private val project: Project) {
             val sorted = diagnostics
                 .sortedWith(compareByDescending<LintDiagnostic> { it.level.rank }.thenBy { it.offset })
                 .distinctBy { Triple(it.level, it.message, it.code) }
+
             LineEntry(document.getLineEndOffset(line), sorted)
         }
     }

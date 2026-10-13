@@ -1,1 +1,1 @@
-rootProject.name = "LintVision"
+rootProject.name = "lint-vision"

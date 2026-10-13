@@ -1,53 +1,50 @@
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
-    id("org.jetbrains.intellij.platform") version "2.7.1"
+    id("org.jetbrains.intellij.platform") version "2.2.1"
 }
 
 group = "dev.gurwi"
-version = "1.0-SNAPSHOT"
+version = providers.gradleProperty("pluginVersion").getOrElse("1.0.0")
 
 repositories {
     mavenCentral()
+
     intellijPlatform {
         defaultRepositories()
     }
 }
 
-// Configure IntelliJ Platform Gradle Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 dependencies {
     intellijPlatform {
-        create("IC", "2025.1.4.1")
-        testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
-
-        // Add necessary plugin dependencies for compilation here, example:
-        // bundledPlugin("com.intellij.java")
+        intellijIdeaCommunity("2024.3")
+        zipSigner()
     }
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild = "251"
+            sinceBuild = "243"
+            untilBuild = provider { null }
         }
-
-        changeNotes = """
-            Initial version
-        """.trimIndent()
     }
-}
 
-tasks {
-    // Set the JVM compatibility versions
-    withType<JavaCompile> {
-        sourceCompatibility = "21"
-        targetCompatibility = "21"
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
     }
-}
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        channels = providers.gradleProperty("pluginVersion").map { version ->
+            listOf(version.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
+        }
     }
 }

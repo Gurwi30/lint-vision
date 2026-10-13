@@ -16,6 +16,7 @@ object LintVisionInlays {
         if (editor.isDisposed) return
         val inlays = editor.getUserData(key) ?: return
         editor.putUserData(key, null)
+
         editor.inlayModel.execute(true) {
             inlays.filter { it.isValid }.forEach { Disposer.dispose(it) }
         }
@@ -25,6 +26,7 @@ object LintVisionInlays {
         clear(editor)
         val limit = editor.document.textLength
         val inlays = ArrayList<Inlay<*>>()
+
         editor.inlayModel.execute(true) {
             for (entry in entries) {
                 val inlay = editor.inlayModel.addAfterLineEndElement(
@@ -35,6 +37,7 @@ object LintVisionInlays {
                 if (inlay != null) inlays.add(inlay)
             }
         }
+
         editor.putUserData(key, inlays)
     }
 

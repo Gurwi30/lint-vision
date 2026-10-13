@@ -24,11 +24,13 @@ class LintVisionHoverHandler(private val project: Project) {
 
     fun install(parent: Disposable) {
         val multicaster = EditorFactory.getInstance().eventMulticaster
+
         multicaster.addEditorMouseMotionListener(object : EditorMouseMotionListener {
             override fun mouseMoved(e: EditorMouseEvent) {
                 onMouseMoved(e)
             }
         }, parent)
+
         multicaster.addEditorMouseListener(object : EditorMouseListener {
             override fun mouseExited(e: EditorMouseEvent) {
                 hide()
@@ -38,14 +40,19 @@ class LintVisionHoverHandler(private val project: Project) {
 
     private fun onMouseMoved(e: EditorMouseEvent) {
         val editor = e.editor
+
         if (editor.project != project) return
+
         val point = e.mouseEvent.point
         val hovered = LintVisionInlays.of(editor).firstOrNull { inlay ->
             (inlay.renderer as? LintVisionRenderer)?.pillBounds(inlay)?.contains(point) == true
         }
+
         if (hovered === current) return
+
         hide()
         current = hovered
+
         if (hovered != null) show(editor, hovered, point)
     }
 
@@ -53,6 +60,7 @@ class LintVisionHoverHandler(private val project: Project) {
         val renderer = inlay.renderer as? LintVisionRenderer ?: return
         val content = HintUtil.createInformationLabel(LintVisionFormatter.tooltip(renderer.entry))
         val next = IdeTooltip(editor.contentComponent, point, content).setPreferredPosition(Balloon.Position.below)
+
         tooltip = next
         IdeTooltipManager.getInstance().show(next, true)
     }
