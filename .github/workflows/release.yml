@@ -17,11 +17,11 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
 
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10.2
+          gradle-version: 9.8.1
 
       - name: Read version from tag
         run: echo "PLUGIN_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
@@ -34,9 +34,27 @@ jobs:
           PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
         run: gradle publishPlugin -PpluginVersion="$PLUGIN_VERSION"
 
+      - name: Extract plugin JAR
+        shell: bash
+        run: |
+          mkdir -p release
+          shopt -s nullglob
+          archives=(build/distributions/*-signed.zip)
+          if [ ${#archives[@]} -eq 0 ]; then
+            echo "No signed plugin ZIP found."
+            exit 1
+          fi
+          for archive in "${archives[@]}"; do
+            unzip -j "$archive" '*.jar' -d release
+          done
+          if ! compgen -G "release/*.jar" > /dev/null; then
+            echo "No plugin JAR found inside signed ZIP."
+            exit 1
+          fi
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/distributions/*.zip
+          files: release/*.jar
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
