@@ -52,10 +52,10 @@ Or install directly from the [plugin page](https://plugins.jetbrains.com/plugin/
 
 ## Compatibility
 
-| | Supported |
-| --- | --- |
-| IDE build | 243 and newer (IntelliJ Platform 2024.3+) |
-| IDEs | JetBrains IDEs built on the IntelliJ Platform |
+|           | Supported                                     |
+|-----------|-----------------------------------------------|
+| IDE build | 243 and newer (IntelliJ Platform 2024.3+)     |
+| IDEs      | JetBrains IDEs built on the IntelliJ Platform |
 
 Diagnostics shown depend on the inspections available in your IDE and language. If a specific IDE or language doesn't behave as expected, please [open an issue](https://github.com/Gurwi30/lint-vision/issues).
 
@@ -63,25 +63,25 @@ Diagnostics shown depend on the inspections available in your IDE and language. 
 
 Open **Settings → Tools → LintVision**.
 
-| Category | What you can change |
-| --- | --- |
+| Category   | What you can change                                                     |
+|------------|-------------------------------------------------------------------------|
 | Severities | Which of errors, warnings, weak warnings, and information are displayed |
-| Colors | A separate color for each severity |
-| Appearance | Background tint, border radius, spacing, italic and bold text |
-| Messages | Templates, severity labels, maximum message length |
-| Behavior | Extra message counts, regex exclusions, update delay |
+| Colors     | A separate color for each severity                                      |
+| Appearance | Background tint, border radius, spacing, italic and bold text           |
+| Messages   | Templates, severity labels, maximum message length                      |
+| Behavior   | Extra message counts, regex exclusions, update delay                    |
 
 ### Message templates
 
 Templates decide how each inline message is formatted. Combine plain text with these variables:
 
-| Variable | Description |
-| --- | --- |
-| `$message` | The inspection message |
-| `$count` | Number of messages on the line |
-| `$severity` | Severity of the diagnostic |
-| `$source` | Where the diagnostic came from |
-| `$code` | The diagnostic code |
+| Variable    | Description                    |
+|-------------|--------------------------------|
+| `$message`  | The inspection message         |
+| `$count`    | Number of messages on the line |
+| `$severity` | Severity of the diagnostic     |
+| `$source`   | Where the diagnostic came from |
+| `$code`     | The diagnostic code            |
 
 A few ideas:
 
