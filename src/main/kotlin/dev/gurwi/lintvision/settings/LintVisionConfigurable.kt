@@ -2,6 +2,7 @@ package dev.gurwi.lintvision.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.ColorPanel
+import com.intellij.ui.JBColor
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
@@ -44,6 +45,10 @@ class LintVisionConfigurable : Configurable {
     private val exclude = JBTextField()
     private val delay = JBIntSpinner(100, 0, 5000)
 
+    private val showHoverPopup = JBCheckBox("Show hover popup")
+    private val hoverShowDelay = JBIntSpinner(300, 0, 5000)
+    private val hoverHideDelay = JBIntSpinner(0, 0, 5000)
+
     private val state get() = LintVisionSettings.getInstance().state
 
     init {
@@ -56,7 +61,7 @@ class LintVisionConfigurable : Configurable {
     override fun createComponent(): JComponent {
         val component = panel {
             row { cell(enabled) }
-            group("Show severities") {
+            group("Show Severities") {
                 row { cell(showErrors) }
                 row { cell(showWarnings) }
                 row { cell(showWeak) }
@@ -91,98 +96,115 @@ class LintVisionConfigurable : Configurable {
                 row("Hide messages matching regex:") { cell(exclude).columns(30) }
                 row("Update delay (ms):") { cell(delay) }
             }
+            group("Hover Popup") {
+                row { cell(showHoverPopup) }
+                row("Show delay (ms):") { cell(hoverShowDelay) }
+                row("Hide delay (ms):") { cell(hoverHideDelay) }
+            }
         }
+
         reset()
         return component
     }
 
     override fun isModified(): Boolean {
-        val s = state
-        return enabled.isSelected != s.enabled ||
-                showErrors.isSelected != s.showErrors ||
-                showWarnings.isSelected != s.showWarnings ||
-                showWeak.isSelected != s.showWeakWarnings ||
-                showInfos.isSelected != s.showInfos ||
-                rgb(errorColor.selectedColor, s.errorColor) != s.errorColor ||
-                rgb(warningColor.selectedColor, s.warningColor) != s.warningColor ||
-                rgb(weakColor.selectedColor, s.weakWarningColor) != s.weakWarningColor ||
-                rgb(infoColor.selectedColor, s.infoColor) != s.infoColor ||
-                showBackground.isSelected != s.showBackground ||
-                backgroundAlpha.number != s.backgroundAlpha ||
-                borderRadius.number != s.borderRadius ||
-                gap.number != s.gap ||
-                italic.isSelected != s.italic ||
-                bold.isSelected != s.bold ||
-                template.text != s.messageTemplate ||
-                errorText.text != s.errorText ||
-                warningText.text != s.warningText ||
-                weakText.text != s.weakWarningText ||
-                infoText.text != s.infoText ||
-                maxLength.number != s.maxLength ||
-                showExtraCount.isSelected != s.showExtraCount ||
-                extraCountMinMessages.number != s.extraCountMinMessages ||
-                exclude.text != s.excludePattern ||
-                delay.number != s.delayMs
+        val state = this@LintVisionConfigurable.state
+        return enabled.isSelected != state.enabled ||
+                showErrors.isSelected != state.showErrors ||
+                showWarnings.isSelected != state.showWarnings ||
+                showWeak.isSelected != state.showWeakWarnings ||
+                showInfos.isSelected != state.showInfos ||
+                rgb(errorColor.selectedColor, state.errorColor) != state.errorColor ||
+                rgb(warningColor.selectedColor, state.warningColor) != state.warningColor ||
+                rgb(weakColor.selectedColor, state.weakWarningColor) != state.weakWarningColor ||
+                rgb(infoColor.selectedColor, state.infoColor) != state.infoColor ||
+                showBackground.isSelected != state.showBackground ||
+                backgroundAlpha.number != state.backgroundAlpha ||
+                borderRadius.number != state.borderRadius ||
+                gap.number != state.gap ||
+                italic.isSelected != state.italic ||
+                bold.isSelected != state.bold ||
+                template.text != state.messageTemplate ||
+                errorText.text != state.errorText ||
+                warningText.text != state.warningText ||
+                weakText.text != state.weakWarningText ||
+                infoText.text != state.infoText ||
+                maxLength.number != state.maxLength ||
+                showExtraCount.isSelected != state.showExtraCount ||
+                extraCountMinMessages.number != state.extraCountMinMessages ||
+                exclude.text != state.excludePattern ||
+                delay.number != state.delayMs ||
+                showHoverPopup.isSelected != state.showHoverPopup ||
+                hoverShowDelay.number != state.hoverShowDelayMs ||
+                hoverHideDelay.number != state.hoverHideDelayMs
     }
 
     override fun apply() {
-        val s = state
-        s.enabled = enabled.isSelected
-        s.showErrors = showErrors.isSelected
-        s.showWarnings = showWarnings.isSelected
-        s.showWeakWarnings = showWeak.isSelected
-        s.showInfos = showInfos.isSelected
-        s.errorColor = rgb(errorColor.selectedColor, s.errorColor)
-        s.warningColor = rgb(warningColor.selectedColor, s.warningColor)
-        s.weakWarningColor = rgb(weakColor.selectedColor, s.weakWarningColor)
-        s.infoColor = rgb(infoColor.selectedColor, s.infoColor)
-        s.showBackground = showBackground.isSelected
-        s.backgroundAlpha = backgroundAlpha.number
-        s.borderRadius = borderRadius.number
-        s.gap = gap.number
-        s.italic = italic.isSelected
-        s.bold = bold.isSelected
-        s.messageTemplate = template.text
-        s.errorText = errorText.text
-        s.warningText = warningText.text
-        s.weakWarningText = weakText.text
-        s.infoText = infoText.text
-        s.maxLength = maxLength.number
-        s.showExtraCount = showExtraCount.isSelected
-        s.extraCountMinMessages = extraCountMinMessages.number
-        s.excludePattern = exclude.text
-        s.delayMs = delay.number
+        val state = this@LintVisionConfigurable.state
+        state.enabled = enabled.isSelected
+        state.showErrors = showErrors.isSelected
+        state.showWarnings = showWarnings.isSelected
+        state.showWeakWarnings = showWeak.isSelected
+        state.showInfos = showInfos.isSelected
+        state.errorColor = rgb(errorColor.selectedColor, state.errorColor)
+        state.warningColor = rgb(warningColor.selectedColor, state.warningColor)
+        state.weakWarningColor = rgb(weakColor.selectedColor, state.weakWarningColor)
+        state.infoColor = rgb(infoColor.selectedColor, state.infoColor)
+        state.showBackground = showBackground.isSelected
+        state.backgroundAlpha = backgroundAlpha.number
+        state.borderRadius = borderRadius.number
+        state.gap = gap.number
+        state.italic = italic.isSelected
+        state.bold = bold.isSelected
+        state.messageTemplate = template.text
+        state.errorText = errorText.text
+        state.warningText = warningText.text
+        state.weakWarningText = weakText.text
+        state.infoText = infoText.text
+        state.maxLength = maxLength.number
+        state.showExtraCount = showExtraCount.isSelected
+        state.extraCountMinMessages = extraCountMinMessages.number
+        state.excludePattern = exclude.text
+        state.delayMs = delay.number
+        state.showHoverPopup = showHoverPopup.isSelected
+        state.hoverShowDelayMs = hoverShowDelay.number
+        state.hoverHideDelayMs = hoverHideDelay.number
 
         LintVisionService.refreshAllProjects()
     }
 
     override fun reset() {
-        val s = state
-        enabled.isSelected = s.enabled
-        showErrors.isSelected = s.showErrors
-        showWarnings.isSelected = s.showWarnings
-        showWeak.isSelected = s.showWeakWarnings
-        showInfos.isSelected = s.showInfos
-        errorColor.selectedColor = Color(s.errorColor)
-        warningColor.selectedColor = Color(s.warningColor)
-        weakColor.selectedColor = Color(s.weakWarningColor)
-        infoColor.selectedColor = Color(s.infoColor)
-        showBackground.isSelected = s.showBackground
-        backgroundAlpha.number = s.backgroundAlpha
-        borderRadius.number = s.borderRadius
-        gap.number = s.gap
-        italic.isSelected = s.italic
-        bold.isSelected = s.bold
-        template.text = s.messageTemplate
-        errorText.text = s.errorText
-        warningText.text = s.warningText
-        weakText.text = s.weakWarningText
-        infoText.text = s.infoText
-        maxLength.number = s.maxLength
-        showExtraCount.isSelected = s.showExtraCount
-        extraCountMinMessages.number = s.extraCountMinMessages
-        exclude.text = s.excludePattern
-        delay.number = s.delayMs
+        val defaultState = state
+
+        enabled.isSelected = defaultState.enabled
+        showErrors.isSelected = defaultState.showErrors
+        showWarnings.isSelected = defaultState.showWarnings
+        showWeak.isSelected = defaultState.showWeakWarnings
+        showInfos.isSelected = defaultState.showInfos
+        errorColor.selectedColor = JBColor(defaultState.errorColor, defaultState.errorColor)
+        warningColor.selectedColor = JBColor(defaultState.warningColor, defaultState.warningColor)
+        weakColor.selectedColor = JBColor(defaultState.weakWarningColor, defaultState.weakWarningColor)
+        infoColor.selectedColor = JBColor(defaultState.infoColor, defaultState.infoColor)
+        showBackground.isSelected = defaultState.showBackground
+        backgroundAlpha.number = defaultState.backgroundAlpha
+        borderRadius.number = defaultState.borderRadius
+        gap.number = defaultState.gap
+        italic.isSelected = defaultState.italic
+        bold.isSelected = defaultState.bold
+        template.text = defaultState.messageTemplate
+        errorText.text = defaultState.errorText
+        warningText.text = defaultState.warningText
+        weakText.text = defaultState.weakWarningText
+        infoText.text = defaultState.infoText
+        maxLength.number = defaultState.maxLength
+        showExtraCount.isSelected = defaultState.showExtraCount
+        extraCountMinMessages.number = defaultState.extraCountMinMessages
+        exclude.text = defaultState.excludePattern
+        delay.number = defaultState.delayMs
+        showHoverPopup.isSelected = defaultState.showHoverPopup
+        hoverShowDelay.number = defaultState.hoverShowDelayMs
+        hoverHideDelay.number = defaultState.hoverHideDelayMs
+
         updateEnabledState()
     }
 

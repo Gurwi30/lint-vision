@@ -46,6 +46,10 @@ class LintVisionSettings : PersistentStateComponent<LintVisionSettings.State> {
         var excludePattern = ""
         var delayMs = 100
 
+        var showHoverPopup = true
+        var hoverShowDelayMs = 300
+        var hoverHideDelayMs = 0
+
     }
 
     private val state = State()

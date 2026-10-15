@@ -20,6 +20,7 @@ import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Alarm
 import dev.gurwi.lintvision.render.LintVisionInlays
 import dev.gurwi.lintvision.render.LintVisionRenderer
+import dev.gurwi.lintvision.settings.LintVisionSettings
 import java.awt.Component
 import java.awt.Container
 import java.awt.Point
@@ -35,6 +36,8 @@ class LintVisionHoverHandler(private val project: Project) {
     private var popup: JBPopup? = null
     private var popupInlay: Inlay<*>? = null
 
+    private var state = LintVisionSettings.getInstance().state
+
     fun install(parent: Disposable) {
         showAlarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, parent)
         hideAlarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, parent)
@@ -45,6 +48,7 @@ class LintVisionHoverHandler(private val project: Project) {
                 onMouseMoved(e)
             }
         }, parent)
+
         multicaster.addEditorMouseListener(object : EditorMouseListener {
             override fun mouseExited(e: EditorMouseEvent) {
                 target = null
@@ -52,6 +56,7 @@ class LintVisionHoverHandler(private val project: Project) {
                 scheduleHide()
             }
         }, parent)
+
         multicaster.addDocumentListener(object : DocumentListener {
             override fun documentChanged(event: DocumentEvent) {
                 target = null
@@ -63,6 +68,8 @@ class LintVisionHoverHandler(private val project: Project) {
     }
 
     private fun onMouseMoved(e: EditorMouseEvent) {
+        if (!state.showHoverPopup) return
+
         val editor = e.editor
         if (editor.project != project || e.area != EditorMouseEventArea.EDITING_AREA) return
 
@@ -82,7 +89,7 @@ class LintVisionHoverHandler(private val project: Project) {
         if (popupInlay === hovered && popup?.isVisible == true) return
 
         close()
-        showAlarm.addRequest({ show(editor, hovered) }, SHOW_DELAY_MS)
+        showAlarm.addRequest({ show(editor, hovered) }, state.hoverShowDelayMs)
     }
 
     private fun inlayAt(editor: Editor, point: Point): Inlay<*>? {
@@ -144,7 +151,7 @@ class LintVisionHoverHandler(private val project: Project) {
     private fun scheduleHide() {
         if (popup == null) return
         hideAlarm.cancelAllRequests()
-        hideAlarm.addRequest({ close() }, HIDE_DELAY_MS)
+        hideAlarm.addRequest({ close() }, state.hoverHideDelayMs)
     }
 
     private fun close() {
@@ -154,13 +161,6 @@ class LintVisionHoverHandler(private val project: Project) {
         popup = null
         popupInlay = null
         current?.cancel()
-    }
-
-    companion object {
-
-        private const val SHOW_DELAY_MS = 300
-        private const val HIDE_DELAY_MS = 350
-
     }
 
 }
