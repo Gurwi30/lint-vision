@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.ColorUtil
-import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import dev.gurwi.lintvision.model.LineEntry
 import dev.gurwi.lintvision.settings.LintVisionSettings

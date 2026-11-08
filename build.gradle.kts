@@ -2,11 +2,11 @@
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
-    id("org.jetbrains.intellij.platform") version "2.2.1"
+    id("org.jetbrains.intellij.platform") version "2.20.0"
 }
 
 group = "dev.gurwi"
-version = providers.gradleProperty("pluginVersion").getOrElse("1.0.0")
+version = providers.gradleProperty("pluginVersion").getOrElse("DEV")
 
 repositories {
     mavenCentral()
