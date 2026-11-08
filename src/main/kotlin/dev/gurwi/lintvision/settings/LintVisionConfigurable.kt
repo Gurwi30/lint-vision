@@ -4,6 +4,7 @@ import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.JBColor
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import dev.gurwi.lintvision.service.LintVisionService
 import kotlin.reflect.KMutableProperty0
@@ -14,8 +15,8 @@ class LintVisionConfigurable : BoundConfigurable("LintVision") {
 
     override fun createPanel(): DialogPanel = panel {
         val s = state
-        lateinit var showBackground: Cell<com.intellij.ui.components.JBCheckBox>
-        lateinit var showExtraCount: Cell<com.intellij.ui.components.JBCheckBox>
+        lateinit var showBackground: Cell<JBCheckBox>
+        lateinit var showExtraCount: Cell<JBCheckBox>
 
         row { checkBox("Enable LintVision").bindSelected(s::enabled) }
 
