@@ -1,5 +1,5 @@
 
-<idea-plugin>
+<idea-plugin require-restart="false">
     <resource-bundle>messages.LintVisionBundle</resource-bundle>
     <id>dev.gurwi.LintVision</id>
     <name>LintVision</name>

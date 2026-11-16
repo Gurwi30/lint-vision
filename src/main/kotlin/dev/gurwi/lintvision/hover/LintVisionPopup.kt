@@ -1,11 +1,7 @@
 package dev.gurwi.lintvision.hover
 
-import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUiKind
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
@@ -166,9 +162,13 @@ object LintVisionPopup {
         IdeFocusManager.getInstance(project).requestFocus(editor.contentComponent, true)
 
         val action = ActionManager.getInstance().getAction(INTENTIONS_ACTION_ID) ?: return
-        val dataContext = DataManager.getInstance().getDataContext(editor.contentComponent)
-        val event = AnActionEvent.createEvent(dataContext, null, ActionPlaces.EDITOR_POPUP, ActionUiKind.NONE, null)
-        ActionUtil.invokeAction(action, event, null)
+        ActionManager.getInstance().tryToExecute(
+            action,
+            null,
+            editor.contentComponent,
+            ActionPlaces.EDITOR_POPUP,
+            true
+        )
     }
 
 }

@@ -29,6 +29,9 @@ kotlin {
 
 intellijPlatform {
     pluginConfiguration {
+        changeNotes = providers.environmentVariable("CHANGE_NOTES")
+            .orElse("Maintenance release")
+
         ideaVersion {
             sinceBuild = "243"
             untilBuild = provider { null }
